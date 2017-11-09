@@ -45,20 +45,20 @@ public final class Following implements HttpRequestExecutor
 {
 
     private final HttpRequestExecutor mDecoratedExecutor;
-    private final RedirectPolicy mRedirectPolicy;
+    private final RedirectStrategy mRedirectStrategy;
 
 
-    public Following(HttpRequestExecutor decoratedExecutor, RedirectPolicy redirectPolicy)
+    public Following(HttpRequestExecutor decoratedExecutor, RedirectStrategy redirectStrategy)
     {
         mDecoratedExecutor = decoratedExecutor;
-        mRedirectPolicy = redirectPolicy;
+        mRedirectStrategy = redirectStrategy;
     }
 
 
     @Override
     public <T> T execute(URI uri, final HttpRequest<T> request) throws ProtocolException, ProtocolError, IOException
     {
-        return mDecoratedExecutor.execute(uri, new FollowingRequest<T>(request, uri));
+        return mDecoratedExecutor.execute(uri, new FollowingRequest<>(request, uri));
     }
 
 
@@ -109,7 +109,7 @@ public final class Following implements HttpRequestExecutor
         @Override
         public HttpResponseHandler<T> responseHandler(HttpResponse response) throws IOException, ProtocolError, ProtocolException
         {
-            if (response.status().isRedirect() && mRedirectPolicy.affects(response))
+            if (response.status().isRedirect() && mRedirectStrategy.affects(response))
             {
                 return new RedirectResponseHandler();
             }
@@ -131,7 +131,7 @@ public final class Following implements HttpRequestExecutor
 
             Set<URI> redirectHistory = redirectHistory();
 
-            URI newLocation = mRedirectPolicy.location(response, redirectHistory.size() + 1);
+            URI newLocation = mRedirectStrategy.location(response, redirectHistory.size() + 1);
 
             if (redirectHistory.contains(newLocation))
             {
@@ -148,7 +148,7 @@ public final class Following implements HttpRequestExecutor
         {
             if (mRedirectHistory == null)
             {
-                return new HashSet<URI>();
+                return new HashSet<>();
             }
             return mRedirectHistory;
         }

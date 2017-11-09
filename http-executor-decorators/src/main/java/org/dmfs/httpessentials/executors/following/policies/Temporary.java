@@ -41,7 +41,9 @@ import static org.dmfs.httpessentials.HttpStatus.TEMPORARY_REDIRECT;
  * }</pre>
  *
  * @author Marten Gajda
+ * @deprecated in favor of {@link org.dmfs.httpessentials.executors.following.strategies.Temporary}
  */
+@Deprecated
 public final class Temporary implements RedirectPolicy
 {
     private final RedirectPolicy mDecoratedPolicy;

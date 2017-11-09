@@ -22,6 +22,7 @@ import org.dmfs.httpessentials.client.HttpResponse;
 import org.dmfs.httpessentials.exceptions.RedirectionException;
 import org.dmfs.httpessentials.exceptions.TooManyRedirectsException;
 import org.dmfs.httpessentials.executors.following.RedirectPolicy;
+import org.dmfs.httpessentials.executors.following.strategies.FollowRedirectStrategy;
 import org.dmfs.httpessentials.headers.HttpHeaders;
 
 import java.net.URI;
@@ -37,7 +38,9 @@ import static org.dmfs.httpessentials.HttpStatus.TEMPORARY_REDIRECT;
  * A {@link RedirectPolicy} that follows all redirects until the given max number of redirects is reached.
  *
  * @author Gabor Keszthelyi
+ * @deprecated in favor of {@link FollowRedirectStrategy}
  */
+@Deprecated
 public final class FollowRedirectPolicy implements RedirectPolicy
 {
     /**

@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-package org.dmfs.httpessentials.executors.following.policies;
+package org.dmfs.httpessentials.executors.following.strategies;
 
 import org.dmfs.httpessentials.HttpStatus;
 import org.dmfs.httpessentials.client.HttpResponse;
 import org.dmfs.httpessentials.exceptions.RedirectionException;
 import org.dmfs.httpessentials.exceptions.TooManyRedirectsException;
 import org.dmfs.httpessentials.executors.following.RedirectPolicy;
-import org.dmfs.httpessentials.executors.following.strategies.NeverFollowRedirectStrategy;
+import org.dmfs.httpessentials.executors.following.RedirectStrategy;
 import org.dmfs.httpessentials.headers.HttpHeaders;
 
 import java.net.URI;
@@ -35,14 +35,34 @@ import static org.dmfs.httpessentials.HttpStatus.TEMPORARY_REDIRECT;
 
 
 /**
- * A {@link RedirectPolicy} that never allows following redirects (always throws {@link RedirectionException}.
+ * A {@link RedirectPolicy} that follows all redirects until the given max number of redirects is reached.
  *
  * @author Gabor Keszthelyi
- * @deprecated in favor of {@link NeverFollowRedirectStrategy}
  */
-@Deprecated
-public final class NeverFollowRedirectPolicy implements RedirectPolicy
+public final class FollowRedirectStrategy implements RedirectStrategy
 {
+    /**
+     * The default maximum redirects per request.
+     */
+    public static final int DEFAULT_MAX_REDIRECTS = 5;
+
+    private final int mMaxNumberOfRedirects;
+
+
+    /**
+     * Creates a {@link FollowRedirectStrategy} with the default redirect limit of {@value DEFAULT_MAX_REDIRECTS}.
+     */
+    public FollowRedirectStrategy()
+    {
+        this(DEFAULT_MAX_REDIRECTS);
+    }
+
+
+    public FollowRedirectStrategy(int maxNumberOfRedirects)
+    {
+        mMaxNumberOfRedirects = maxNumberOfRedirects;
+    }
+
 
     @Override
     public boolean affects(HttpResponse response)
@@ -57,9 +77,14 @@ public final class NeverFollowRedirectPolicy implements RedirectPolicy
 
 
     @Override
-    public URI location(HttpResponse response, int redirectNumber) throws RedirectionException, TooManyRedirectsException
+    public URI location(HttpResponse response, int redirectNumber) throws RedirectionException
     {
         URI newLocation = response.headers().header(HttpHeaders.LOCATION).value();
-        throw new RedirectionException(response.status(), response.requestUri(), newLocation);
+        if (redirectNumber > mMaxNumberOfRedirects)
+        {
+            throw new TooManyRedirectsException(response.status(), redirectNumber, response.requestUri(), newLocation);
+        }
+        return response.requestUri().resolve(newLocation);
     }
+
 }

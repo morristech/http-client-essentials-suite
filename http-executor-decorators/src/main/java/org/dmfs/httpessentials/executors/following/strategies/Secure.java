@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-package org.dmfs.httpessentials.executors.following.policies;
+package org.dmfs.httpessentials.executors.following.strategies;
 
 import org.dmfs.httpessentials.client.HttpResponse;
 import org.dmfs.httpessentials.exceptions.RedirectionException;
 import org.dmfs.httpessentials.exceptions.TooManyRedirectsException;
 import org.dmfs.httpessentials.executors.following.RedirectPolicy;
+import org.dmfs.httpessentials.executors.following.RedirectStrategy;
 
 import java.net.URI;
 
@@ -31,18 +32,16 @@ import java.net.URI;
  * Any insecure redirect will throw a {@link RedirectionException}.
  *
  * @author Gabor Keszthelyi
- * @deprecated in favor of {@link org.dmfs.httpessentials.executors.following.strategies.Secure}
  */
-@Deprecated
-public final class Secure implements RedirectPolicy
+public final class Secure implements RedirectStrategy
 {
 
     private static final String HTTPS_SCHEME = "https";
 
-    private final RedirectPolicy mDecoratedPolicy;
+    private final RedirectStrategy mDecoratedPolicy;
 
 
-    public Secure(RedirectPolicy decoratedPolicy)
+    public Secure(RedirectStrategy decoratedPolicy)
     {
         mDecoratedPolicy = decoratedPolicy;
     }

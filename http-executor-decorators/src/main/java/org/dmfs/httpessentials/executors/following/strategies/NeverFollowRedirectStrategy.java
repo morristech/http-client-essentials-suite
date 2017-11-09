@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-package org.dmfs.httpessentials.executors.following.policies;
+package org.dmfs.httpessentials.executors.following.strategies;
 
 import org.dmfs.httpessentials.HttpStatus;
 import org.dmfs.httpessentials.client.HttpResponse;
 import org.dmfs.httpessentials.exceptions.RedirectionException;
 import org.dmfs.httpessentials.exceptions.TooManyRedirectsException;
 import org.dmfs.httpessentials.executors.following.RedirectPolicy;
-import org.dmfs.httpessentials.executors.following.strategies.NeverFollowRedirectStrategy;
+import org.dmfs.httpessentials.executors.following.RedirectStrategy;
 import org.dmfs.httpessentials.headers.HttpHeaders;
 
 import java.net.URI;
@@ -38,10 +38,8 @@ import static org.dmfs.httpessentials.HttpStatus.TEMPORARY_REDIRECT;
  * A {@link RedirectPolicy} that never allows following redirects (always throws {@link RedirectionException}.
  *
  * @author Gabor Keszthelyi
- * @deprecated in favor of {@link NeverFollowRedirectStrategy}
  */
-@Deprecated
-public final class NeverFollowRedirectPolicy implements RedirectPolicy
+public final class NeverFollowRedirectStrategy implements RedirectStrategy
 {
 
     @Override

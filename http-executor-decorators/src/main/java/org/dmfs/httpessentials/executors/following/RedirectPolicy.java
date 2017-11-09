@@ -17,52 +17,15 @@
 
 package org.dmfs.httpessentials.executors.following;
 
-import org.dmfs.httpessentials.client.HttpResponse;
-import org.dmfs.httpessentials.exceptions.RedirectionException;
-import org.dmfs.httpessentials.exceptions.TooManyRedirectsException;
-
-import java.net.URI;
-
-
 /**
  * Interface for defining a redirect policy, i.e. deciding what to do with a redirect response: follow it or not and to what new location. Receiving the entire
  * response allows specifically customized policy implementations.
  *
  * @author Marten Gajda
  * @author Gabor Keszthelyi
+ * @deprecated in favor of {@link RedirectStrategy}
  */
-public interface RedirectPolicy
+@Deprecated
+public interface RedirectPolicy extends RedirectStrategy
 {
-
-    /**
-     * Determines whether this {@link RedirectPolicy} affects the given {@link HttpResponse}. The result of this is undefined if the response has a status code
-     * that is not in the rage of redirection status codes.
-     *
-     * @param response
-     *         An {@link HttpResponse} with any redirection status code (i.e. 3xx).
-     *
-     * @return {@code true} if this {@link RedirectPolicy} affects the given response, {@code false} otherwise.
-     */
-    boolean affects(HttpResponse response);
-
-    /***
-     * Called when a redirect response (see status codes below) is received. Returns the URI to follow or throws {@link RedirectionException} (which results in
-     * not following the redirection).
-     *
-     * Note, the behavior of this method is undefined if {@link #affects(HttpResponse)} returns {@code false} for the same {@link HttpResponse}.
-     *
-     * @param response
-     *         Response with any redirection status code (i.e. 3xx)
-     * @param redirectNumber
-     *         the number of this redirect in the call
-     *
-     * @return the new location to follow (absolute uri).
-     *
-     * @throws RedirectionException
-     *         if policy decides to not to follow the redirect.
-     * @throws TooManyRedirectsException
-     *         if policy decides this would be too many redirects
-     */
-    URI location(HttpResponse response, int redirectNumber) throws RedirectionException, TooManyRedirectsException;
-
 }
